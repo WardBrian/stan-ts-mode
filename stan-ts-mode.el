@@ -120,6 +120,8 @@
       name: (identifier) @font-lock-function-call-face)
      (distr_expression
       name: (identifier) @font-lock-function-call-face)
+     (sampling_statement
+      name: (identifier) @font-lock-function-call-face)
      (print_statement
       "print" @font-lock-function-call-face)
      (reject_statement
