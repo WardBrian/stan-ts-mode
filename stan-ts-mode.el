@@ -161,7 +161,7 @@
   "Tree-sitter font lock settings"
   )
 
-
+;;;###autoload
 (define-derived-mode stan-ts-mode prog-mode "Stan"
   (when (treesit-ready-p 'stan)
     (treesit-parser-create `stan)
