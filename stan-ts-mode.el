@@ -157,20 +157,52 @@
    :feature 'variable
    :language 'stan
    '((identifier) @font-lock-variable-use-face)
+
+   :feature 'error
+   :language 'stan
+   :override t
+   '((ERROR) @font-lock-warning-face)
    )
   "Tree-sitter font lock settings"
   )
 
+
+(defvar stan-ts-mode--syntax-table
+  (let ((table (make-syntax-table)))
+    ;; Adapted from c-ts-mode
+    (modify-syntax-entry ?_  "_"     table)
+    (modify-syntax-entry ?+  "."     table)
+    (modify-syntax-entry ?-  "."     table)
+    (modify-syntax-entry ?=  "."     table)
+    (modify-syntax-entry ?%  "."     table)
+    (modify-syntax-entry ?<  "."     table)
+    (modify-syntax-entry ?>  "."     table)
+    (modify-syntax-entry ?&  "."     table)
+    (modify-syntax-entry ?|  "."     table)
+    (modify-syntax-entry ?\; "."     table)
+    (modify-syntax-entry ?'  "."     table)
+    (modify-syntax-entry ?/  ". 124b" table)
+    (modify-syntax-entry ?*  ". 23"   table)
+    (modify-syntax-entry ?\n "> b"  table)
+    (modify-syntax-entry ?\^m "> b" table)
+    table)
+  "Syntax table for `stan-ts-mode'.")
+
 ;;;###autoload
 (define-derived-mode stan-ts-mode prog-mode "Stan"
+  "Major mode for editing Stan, powered by tree-sitter
+
+\\{stan-mode-map}"
+  :syntax-table stan-ts-mode--syntax-table
+
   (when (treesit-ready-p 'stan)
     (treesit-parser-create `stan)
     (setq-local treesit-font-lock-feature-list
                 ;; the 4 lists here correspond to different settings of treesit-font-lock-level
                 '((comment block definition)
                   (keyword preprocessor string type)
-                  (number constraints)
-                  (operator bracket delimiter function variable)))
+                  (number constraints function)
+                  (operator bracket delimiter variable error)))
     (setq-local treesit-font-lock-settings stan--treesit-settings)
     (treesit-major-mode-setup)))
 

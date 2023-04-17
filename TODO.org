@@ -1,0 +1,5 @@
+* ~stan-ts-mode~ development goals [0/3]
+** TODO Port over [[https://github.com/stan-dev/stan-mode/blob/master/flycheck-stan/flycheck-stan.el][flycheck-stan]]
+** TODO Try to add indentation, or possibly expose stanc's formatter?
+** TODO Testing?
+** TODO MELPA release, or incorporate into ~stan-mode~ and release?
