@@ -13,9 +13,11 @@
     "real"
     "complex"
     "array"
+    "tuple"
     "vector"
     "simplex"
     "unit_vector"
+    "sum_to_zero_vector"
     "ordered"
     "positive_ordered"
     "row_vector"
@@ -27,6 +29,9 @@
     "cov_matrix"
     "cholesky_factor_cov"
     "cholesky_factor_corr"
+    "column_stochastic_matrix"
+    "row_stochastic_matrix"
+    "sum_to_zero_matrix"
     "void"))
 
 (defvar stan--treesit-operators
