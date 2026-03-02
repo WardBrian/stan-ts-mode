@@ -1,7 +1,9 @@
 # stan-ts-mode
 
 A major mode for editing Stan files in Emacs based
-on [tree-sitter-stan](https://github.com/WardBrian/tree-sitter-stan)
+on [tree-sitter-stan](https://github.com/WardBrian/tree-sitter-stan).
+
+It works well when [paired with the `stan-language-server`](https://github.com/tomatitito/stan-language-server#emacs-eglot).
 
 This is still a work in progress.
 
