@@ -7,6 +7,11 @@
 
 (require 'treesit)
 
+(defcustom stan-ts-mode-indent-offset 2
+  "Number of spaces for each indentation step in `stan-ts-mode'."
+  :type 'integer
+  :group 'stan)
+
 (defvar stan--treesit-types
   '("data"
     "int"
@@ -179,6 +184,48 @@
   )
 
 
+(defvar stan-ts-mode--indent-rules
+  `((stan
+     ;; Top-level: column 0
+     ((parent-is "program") column-0 0)
+
+     ;; Closing brackets align with parent
+     ((node-is "}") parent-bol 0)
+     ((node-is ")") parent-bol 0)
+     ((node-is "]") parent-bol 0)
+
+     ;; Program blocks (data { ... }, model { ... }, etc.)
+     ((parent-is "functions") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "data") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "transformed_data") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "parameters") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "transformed_parameters") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "model") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "generated_quantities") parent-bol ,stan-ts-mode-indent-offset)
+
+     ;; Braced block statements ({ ... })
+     ((parent-is "block_statement") parent-bol ,stan-ts-mode-indent-offset)
+
+     ;; Control flow bodies
+     ((parent-is "for_statement") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "while_statement") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "if_statement") parent-bol ,stan-ts-mode-indent-offset)
+
+     ;; Function definitions
+     ((parent-is "function_definition") parent-bol ,stan-ts-mode-indent-offset)
+
+     ;; Profile blocks
+     ((parent-is "profile_statement") parent-bol ,stan-ts-mode-indent-offset)
+
+     ;; Argument lists (multi-line function calls)
+     ((parent-is "argument_list") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "distr_argument_list") parent-bol ,stan-ts-mode-indent-offset)
+     ((parent-is "parameter_list") parent-bol ,stan-ts-mode-indent-offset)
+
+     ;; Fallback
+     (no-node parent-bol 0)))
+  "Tree-sitter indent rules for Stan.")
+
 (defvar stan-ts-mode--syntax-table
   (let ((table (make-syntax-table)))
     ;; Adapted from c-ts-mode
@@ -214,6 +261,15 @@
     (setq-local comment-start "// ")
     (setq-local comment-end "")
     (setq-local comment-start-skip "//+\\s-*")
+
+    ;; Indentation
+    (setq-local indent-tabs-mode nil)
+    (setq-local tab-width 2)
+    (setq-local treesit-simple-indent-rules stan-ts-mode--indent-rules)
+
+    ;; Electric
+    (setq-local electric-indent-chars
+                (append "{}()" electric-indent-chars))
 
     (setq-local treesit-font-lock-feature-list
                 ;; the 4 lists here correspond to different settings of treesit-font-lock-level
