@@ -94,7 +94,8 @@
 
    :feature 'operator
    :language 'stan
-   `([,@stan--treesit-operators] @font-lock-operator-face)
+   `([,@stan--treesit-operators] @font-lock-operator-face
+     (assignment_op) @font-lock-operator-face)
 
 
    :feature 'bracket
@@ -130,7 +131,11 @@
      (print_statement
       "print" @font-lock-function-call-face)
      (reject_statement
-      "reject" @font-lock-function-call-face))
+      "reject" @font-lock-function-call-face)
+     (fatal_error_statement
+      "fatal_error" @font-lock-function-call-face)
+     (function_statement
+      name: (identifier) @font-lock-function-call-face))
 
    :feature 'type
    :language 'stan
@@ -149,7 +154,9 @@
       "if"
       "else"
       "return"] @font-lock-keyword-face
-      (profile_statement "profile" @font-lock-keyword-face))
+      (profile_statement "profile" @font-lock-keyword-face)
+      (target_statement "target" @font-lock-keyword-face)
+      (jacobian_statement "jacobian" @font-lock-keyword-face))
 
    :feature 'preprocessor
    :language 'stan
