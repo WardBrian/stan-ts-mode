@@ -209,6 +209,12 @@
 
   (when (treesit-ready-p 'stan)
     (treesit-parser-create `stan)
+
+    ;; Comment syntax
+    (setq-local comment-start "// ")
+    (setq-local comment-end "")
+    (setq-local comment-start-skip "//+\\s-*")
+
     (setq-local treesit-font-lock-feature-list
                 ;; the 4 lists here correspond to different settings of treesit-font-lock-level
                 '((comment block definition)
