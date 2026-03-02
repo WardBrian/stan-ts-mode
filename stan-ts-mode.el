@@ -219,6 +219,7 @@
     (treesit-major-mode-setup)))
 
 (when (treesit-ready-p 'stan)
-  (add-to-list 'auto-mode-alist '("\\.stan\\'" . stan-ts-mode)))
+  (add-to-list 'auto-mode-alist '("\\.stan\\'" . stan-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.stanfunctions\\'" . stan-ts-mode)))
 
 (provide 'stan-ts-mode)
