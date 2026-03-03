@@ -1,18 +1,34 @@
-;;; stan-mode.el --- Major mode for editing Stan files -*- lexical-binding: t; -*-
+;;; stan-ts-mode.el --- Major mode for editing Stan files -*- lexical-binding: t -*-
 
-;; see
-;; https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/python.el
-;; https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/go-ts-mode.el
-;; https://git.savannah.gnu.org/cgit/emacs.git/tree/admin/notes/tree-sitter/starter-guide
+;; Copyright (C) 2023-2026 Simons Foundation
+
+;; Author: Brian Ward <bward@flatironinstitute.org>
+;; Version: 1.0
+;; Package-Requires: ((emacs "30.1"))
+;; Keywords: stan languages tree-sitter
+;; URL: https://github.com/WardBrian/stan-ts-mode
+
+;;; Commentary:
+;; This package provides tree-sitter powered syntax highlighting
+;; for the Stan programming language (https://mc-stan.org/).
+
+
+;;; Code:
 
 (require 'treesit)
+
+;; TODO: In emacs 31.1+, use treesit-ensure-installed instead of treesit-ready-p
+;; (add-to-list
+;;  'treesit-language-source-alist
+;;  '(stan . ("https://github.com/WardBrian/tree-sitter-stan"))
+;;  t)
 
 (defcustom stan-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `stan-ts-mode'."
   :type 'integer
   :group 'stan)
 
-(defvar stan--treesit-types
+(defvar stan-ts-mode--treesit-types
   '("data"
     "int"
     "real"
@@ -39,7 +55,7 @@
     "sum_to_zero_matrix"
     "void"))
 
-(defvar stan--treesit-operators
+(defvar stan-ts-mode--treesit-operators
   '(
     "||"
     "&&"
@@ -71,11 +87,9 @@
     "*="
     "/="
     ".*="
-    "./="
-    )
-  )
+    "./="))
 
-(defvar stan--treesit-settings
+(defvar stan-ts-mode--treesit-settings
   (treesit-font-lock-rules
    :feature 'block
    :language 'stan
@@ -86,8 +100,7 @@
      (parameters "parameters" @font-lock-keyword-face)
      (transformed_parameters "transformed parameters" @font-lock-keyword-face)
      (model "model" @font-lock-keyword-face)
-     (generated_quantities "generated quantities" @font-lock-keyword-face)
-     )
+     (generated_quantities "generated quantities" @font-lock-keyword-face))
 
    :feature 'comment
    :language 'stan
@@ -99,7 +112,7 @@
 
    :feature 'operator
    :language 'stan
-   `([,@stan--treesit-operators] @font-lock-operator-face
+   `([,@stan-ts-mode--treesit-operators] @font-lock-operator-face
      (assignment_op) @font-lock-operator-face)
 
 
@@ -144,7 +157,7 @@
 
    :feature 'type
    :language 'stan
-   `([,@stan--treesit-types]  @font-lock-type-face)
+   `([,@stan-ts-mode--treesit-types]  @font-lock-type-face)
 
    :feature 'number
    :language 'stan
@@ -178,10 +191,8 @@
    :feature 'error
    :language 'stan
    :override t
-   '((ERROR) @font-lock-warning-face)
-   )
-  "Tree-sitter font lock settings"
-  )
+   '((ERROR) @font-lock-warning-face))
+  "Tree-sitter font lock settings.")
 
 
 (defvar stan-ts-mode--indent-rules
@@ -249,9 +260,7 @@
 
 ;;;###autoload
 (define-derived-mode stan-ts-mode prog-mode "Stan"
-  "Major mode for editing Stan, powered by tree-sitter
-
-\\{stan-mode-map}"
+  "Major mode for editing Stan, powered by tree-sitter."
   :syntax-table stan-ts-mode--syntax-table
 
   (when (treesit-ready-p 'stan)
@@ -277,7 +286,7 @@
                   (keyword preprocessor string type)
                   (number constraints function)
                   (operator bracket delimiter variable error)))
-    (setq-local treesit-font-lock-settings stan--treesit-settings)
+    (setq-local treesit-font-lock-settings stan-ts-mode--treesit-settings)
     (treesit-major-mode-setup)))
 
 (when (treesit-ready-p 'stan)
@@ -285,3 +294,5 @@
   (add-to-list 'auto-mode-alist '("\\.stanfunctions\\'" . stan-ts-mode)))
 
 (provide 'stan-ts-mode)
+
+;;; stan-ts-mode.el ends here
