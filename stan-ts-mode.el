@@ -7,6 +7,7 @@
 ;; Package-Requires: ((emacs "30.1"))
 ;; Keywords: stan languages tree-sitter
 ;; URL: https://github.com/WardBrian/stan-ts-mode
+;; SPDX-License-Identifier: BSD-3-Clause
 
 ;;; Commentary:
 ;; This package provides tree-sitter powered syntax highlighting
@@ -289,9 +290,11 @@
     (setq-local treesit-font-lock-settings stan-ts-mode--treesit-settings)
     (treesit-major-mode-setup)))
 
-(when (treesit-ready-p 'stan)
-  (add-to-list 'auto-mode-alist '("\\.stan\\'" . stan-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.stanfunctions\\'" . stan-ts-mode)))
+(unless (treesit-ready-p 'stan)
+  (user-error "Error: stan-ts-mode cannot be activated. Ensure tree-sitter and tree-sitter-stan are installed"))
+
+(add-to-list 'auto-mode-alist '("\\.stan\\'" . stan-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.stanfunctions\\'" . stan-ts-mode))
 
 (provide 'stan-ts-mode)
 
