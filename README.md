@@ -1,5 +1,7 @@
 # stan-ts-mode
 
+[![MELPA](https://melpa.org/packages/stan-ts-mode-badge.svg)](https://melpa.org/#/stan-ts-mode)
+
 A major mode for editing Stan files in Emacs based
 on [tree-sitter-stan](https://github.com/WardBrian/tree-sitter-stan).
 
@@ -35,7 +37,9 @@ The following `init.el` snippet is what I use:
           )))
     (bmw/treesit-install-all-languages)
 
-    (load-file "PATH/TO/stan-ts-mode.el")
+    ;; (load-file "PATH/TO/stan-ts-mode.el")
+    ;; OR
+    ;; (use-package stan-ts-mode :ensure t) ;; requires MELPA in your package-archives list
     )
 ```
 
