@@ -16,31 +16,37 @@ When using Emacs 29+ ensure you have [compiled with treesit support](https://www
 The following `init.el` snippet is what I use:
 
 ```emacs-lisp
-  (when (treesit-available-p)
-    (require 'treesit)
-    (setq treesit-font-lock-level 4)
-    (setq treesit-language-source-alist
-          '((stan . ("https://github.com/WardBrian/tree-sitter-stan"))
-            ; other languages here
-            ))
 
-    ; could also use https://github.com/renzmann/treesit-auto or similar
-    (defun bmw/treesit-install-all-languages ()
-      "Install all languages specified by `treesit-language-source-alist'."
-      (interactive)
-      (let ((languages (mapcar 'car treesit-language-source-alist)))
-        (dolist (lang languages)
-          (unless (treesit-language-available-p lang)
-            (treesit-install-language-grammar lang)
-            (message "`%s' parser was installed." lang)
-            (sit-for 0.75))
-          )))
-    (bmw/treesit-install-all-languages)
+(require 'package)
+;; if using eglot, recommend using the latest
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+;; for stan-ts-mode
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
 
-    ;; (load-file "PATH/TO/stan-ts-mode.el")
-    ;; OR
-    ;; (use-package stan-ts-mode :ensure t) ;; requires MELPA in your package-archives list
-    )
+
+(use-package treesit
+  :if (treesit-available-p))
+
+(use-package stan-ts-mode
+  :requires treesit
+  :mode "\\.stan\\'"
+  :defer t
+  :init
+  (add-to-list 'treesit-language-source-alist '(stan . ("https://github.com/WardBrian/tree-sitter-stan")))
+  (unless (treesit-language-available-p 'stan)
+    (treesit-install-language-grammar 'stan)))
+
+
+;; if you also want to use https://github.com/tomatitito/stan-language-server
+
+(use-package eglot
+  :ensure t
+  :demand t
+  :pin gnu
+  :hook (stan-ts-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs '(stan-ts-mode . ("PATH/TO/stan-language-server" "--stdio"))))
 ```
 
 ## Preview
