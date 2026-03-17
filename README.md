@@ -1,13 +1,11 @@
 # stan-ts-mode
 
-[![MELPA](https://melpa.org/packages/stan-ts-mode-badge.svg)](https://melpa.org/#/stan-ts-mode)
+[![MELPA](https://melpa.org/packages/stan-ts-mode-badge.svg)](https://melpa.org/#/stan-ts-mode) [![MELPA Stable](https://stable.melpa.org/packages/stan-ts-mode-badge.svg)](https://stable.melpa.org/#/stan-ts-mode)
 
 A major mode for editing Stan files in Emacs based
 on [tree-sitter-stan](https://github.com/WardBrian/tree-sitter-stan).
 
 It works well when [paired with the `stan-language-server`](https://github.com/tomatitito/stan-language-server#emacs-eglot).
-
-This is still a work in progress.
 
 ## Usage
 
@@ -16,12 +14,14 @@ When using Emacs 29+ ensure you have [compiled with treesit support](https://www
 The following `init.el` snippet is what I use:
 
 ```emacs-lisp
-
 (require 'package)
-;; if using eglot, recommend using the latest
+;; if using eglot, recommend using the latest from GNU ELPA
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
+
 ;; for stan-ts-mode
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; can also pull from MELPA stable, if desired:
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
 
