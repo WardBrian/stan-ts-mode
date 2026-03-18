@@ -30,10 +30,11 @@ The following `init.el` snippet is what I use:
 
 (use-package stan-ts-mode
   :requires treesit
-  :mode "\\.stan\\'"
+  :mode ("\\.stan\\'" "\\.stanfunctions\\'")
   :defer t
   :init
-  (add-to-list 'treesit-language-source-alist '(stan . ("https://github.com/WardBrian/tree-sitter-stan")))
+  (add-to-list 'treesit-language-source-alist '(stan .
+  ("https://github.com/WardBrian/tree-sitter-stan" "v0.2.9")))
   (unless (treesit-language-available-p 'stan)
     (treesit-install-language-grammar 'stan)))
 
