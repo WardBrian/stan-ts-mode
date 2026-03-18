@@ -33,12 +33,14 @@ The following `init.el` snippet is what I use:
   :mode (("\\.stan\\'" . stan-ts-mode) ("\\.stanfunctions\\'" . stan-functions-ts-mode))
   :defer t
   :init
-  (add-to-list 'treesit-language-source-alist '(stan .
-  ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stan/src")))
+  (add-to-list
+   'treesit-language-source-alist
+   '(stan . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stan/src")))
   (unless (treesit-language-available-p 'stan)
     (treesit-install-language-grammar 'stan))
-  (add-to-list 'treesit-language-source-alist '(stanfunctions .
-  ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stanfunctions/src")))
+  (add-to-list
+   'treesit-language-source-alist
+   '(stanfunctions . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stanfunctions/src")))
   (unless (treesit-language-available-p 'stanfunctions)
     (treesit-install-language-grammar 'stanfunctions)))
 
@@ -51,7 +53,9 @@ The following `init.el` snippet is what I use:
   :pin gnu
   :hook (stan-ts-base-mode . eglot-ensure)
   :config
-  (add-to-list 'eglot-server-programs '(stan-ts-base-mode . ("PATH/TO/stan-language-server" "--stdio"))))
+  (add-to-list
+   'eglot-server-programs
+   '(stan-ts-base-mode . ("PATH/TO/stan-language-server" "--stdio"))))
 ```
 
 ## Preview

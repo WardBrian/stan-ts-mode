@@ -42,8 +42,7 @@
      "array"
      "tuple"
      "vector"
-     "void"
-     )
+     "void")
    (when (eq language 'stan)
      '(
        "simplex"
@@ -300,6 +299,7 @@
                 (operator bracket delimiter variable error))))
 
 (defun stan-ts-mode--setup-mode (language)
+  "Set up the tree-sitter mode for the given LANGUAGE."
   (when (treesit-ready-p language)
     (let ((parser (treesit-parser-create language)))
       (when (boundp 'treesit-primary-parser)
@@ -320,8 +320,7 @@
   "Major mode for editing Stan Functions files, powered by tree-sitter.
 
 \\{stan-ts-base-mode-map}"
-  (stan-ts-mode--setup-mode 'stanfunctions)
-  )
+  (stan-ts-mode--setup-mode 'stanfunctions))
 
 
 ;;;###autoload
