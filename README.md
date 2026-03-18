@@ -30,7 +30,7 @@ The following `init.el` snippet is what I use:
 
 (use-package stan-ts-mode
   :requires treesit
-  :mode ("\\.stan\\'" "\\.stanfunctions\\'")
+  :mode (("\\.stan\\'" . stan-ts-mode) ("\\.stanfunctions\\'" . stan-functions-ts-mode))
   :defer t
   :init
   (add-to-list 'treesit-language-source-alist '(stan .
@@ -49,9 +49,9 @@ The following `init.el` snippet is what I use:
   :ensure t
   :demand t
   :pin gnu
-  :hook (stan-ts-mode . eglot-ensure)
+  :hook (stan-ts-base-mode . eglot-ensure)
   :config
-  (add-to-list 'eglot-server-programs '(stan-ts-mode . ("PATH/TO/stan-language-server" "--stdio"))))
+  (add-to-list 'eglot-server-programs '(stan-ts-base-mode . ("PATH/TO/stan-language-server" "--stdio"))))
 ```
 
 ## Preview
