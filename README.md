@@ -34,9 +34,13 @@ The following `init.el` snippet is what I use:
   :defer t
   :init
   (add-to-list 'treesit-language-source-alist '(stan .
-  ("https://github.com/WardBrian/tree-sitter-stan" "v0.2.9")))
+  ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stan/src")))
   (unless (treesit-language-available-p 'stan)
-    (treesit-install-language-grammar 'stan)))
+    (treesit-install-language-grammar 'stan))
+  (add-to-list 'treesit-language-source-alist '(stanfunctions .
+  ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stanfunctions/src")))
+  (unless (treesit-language-available-p 'stanfunctions)
+    (treesit-install-language-grammar 'stanfunctions)))
 
 
 ;; if you also want to use https://github.com/tomatitito/stan-language-server
