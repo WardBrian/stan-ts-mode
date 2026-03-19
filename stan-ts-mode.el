@@ -322,17 +322,17 @@
 \\{stan-ts-base-mode-map}"
   (stan-ts-mode--setup-mode 'stanfunctions))
 
-
 ;;;###autoload
 (progn
-  (unless (treesit-ready-p 'stan)
-    (user-error "Error: stan-ts-mode cannot be activated. Ensure tree-sitter and tree-sitter-stan are installed"))
   (add-to-list 'auto-mode-alist '("\\.stan\\'" . stan-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.stanfunctions\\'" . stan-functions-ts-mode)))
 
 (put 'stan-ts-base-mode 'eglot-language-id "stan")
 (put 'stan-ts-mode 'eglot-language-id "stan")
 (put 'stan-functions-ts-mode 'eglot-language-id "stan")
+
+(unless (treesit-ready-p 'stan)
+  (user-error "Error: stan-ts-mode cannot be activated. Ensure tree-sitter and tree-sitter-stan are installed"))
 
 (provide 'stan-ts-mode)
 ;;; stan-ts-mode.el ends here
