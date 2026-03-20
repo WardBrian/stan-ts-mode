@@ -255,8 +255,39 @@ Argument LANGUAGE is the language they are created for."
      ((parent-is "parameter_list") parent-bol ,stan-ts-mode-indent-offset)
 
      ;; Fallback
-     (no-node parent-bol 0)))
-  "Tree-sitter indent rules for Stan.")
+     (no-node parent-bol 0))))
+
+(defun stan-ts-mode--treesit-things (language)
+  "Return the treesit-things-settings for LANGUAGE."
+  `((,language
+     (sexp (not ,(rx (or "{" "}" "[" "]" "(" ")" "," "|"))))
+     (defun "function_definition")
+     (sentence ,(regexp-opt
+                 '("empty_statement"
+                   "assignment_statement"
+                   "sampling_statement"
+                   "function_statement"
+                   "log_prob_statement"
+                   "target_statement"
+                   "jacobian_statement"
+                   "break_statement"
+                   "continue_statement"
+                   "print_statement"
+                   "reject_statement"
+                   "fatal_error_statement"
+                   "return_statement"
+                   "if_statement"
+                   "while_statement"
+                   "for_statement"
+                   "block_statement"
+                   "profile_statement"
+                   "var_decl"
+                   "top_var_decl"
+                   "top_var_decl_no_assign")))
+     (text ,(regexp-opt '("comment" "string_literal")))
+     (string "string_literal")
+     (comment "comment"))))
+
 
 (defvar stan-ts-mode--syntax-table
   (let ((table (make-syntax-table)))
@@ -311,6 +342,11 @@ Argument LANGUAGE is the language they are created for."
         (setq-local treesit-primary-parser parser)))
     (setq-local treesit-simple-indent-rules (stan-ts-mode--indent-rules language))
     (setq-local treesit-font-lock-settings (stan-ts-mode--treesit-settings language))
+
+    (when (boundp 'treesit-thing-settings)
+      (setq-local treesit-thing-settings
+                  (stan-ts-mode--treesit-things language)))
+
     (treesit-major-mode-setup)))
 
 ;;;###autoload
