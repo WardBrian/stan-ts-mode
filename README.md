@@ -15,10 +15,6 @@ The following `init.el` snippet is what I use:
 
 ```emacs-lisp
 (require 'package)
-;; if using eglot, recommend using the latest from GNU ELPA
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
-
-;; for stan-ts-mode
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 ;; can also pull from MELPA stable, if desired:
 ;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -26,29 +22,26 @@ The following `init.el` snippet is what I use:
 
 
 (use-package treesit
-  :if (treesit-available-p))
+  :if (treesit-available-p)
+  :ensure nil
+  :config
+  (setq treesit-language-source-alist
+      '((stan . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stan/src"))
+        (stanfunctions . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stanfunctions/src"))))
+  (unless (treesit-language-available-p 'stan)
+    (treesit-install-language-grammar 'stan))
+  (unless (treesit-language-available-p 'stanfunctions)
+    (treesit-install-language-grammar 'stanfunctions)))
 
 (use-package stan-ts-mode
   :requires treesit
-  :mode ("\\.stan\\'" "\\.stanfunctions\\'")
+  :mode (("\\.stan\\'" . stan-ts-mode) ("\\.stanfunctions\\'" . stan-functions-ts-mode))
   :defer t
-  :init
-  (add-to-list 'treesit-language-source-alist '(stan .
-  ("https://github.com/WardBrian/tree-sitter-stan" "v0.2.9")))
-  (unless (treesit-language-available-p 'stan)
-    (treesit-install-language-grammar 'stan)))
-
-
-;; if you also want to use https://github.com/tomatitito/stan-language-server
-
-(use-package eglot
-  :ensure t
-  :demand t
-  :pin gnu
-  :hook (stan-ts-mode . eglot-ensure)
-  :config
-  (add-to-list 'eglot-server-programs '(stan-ts-mode . ("PATH/TO/stan-language-server" "--stdio"))))
+  :ensure t)
 ```
+
+We also recommend setting up `elgot` [with the `stan-language-server`](https://github.com/tomatitito/stan-language-server#emacs-eglot).
+
 
 ## Preview
 
