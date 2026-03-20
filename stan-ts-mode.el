@@ -34,6 +34,8 @@
   :group 'stan)
 
 (defun stan-ts-mode--treesit-types (language)
+  "Get the valid types for Stan.
+Argument LANGUAGE determines if constrained types are included."
   (append
    '("data"
      "int"
@@ -98,7 +100,8 @@
     "./="))
 
 (defun stan-ts-mode--treesit-settings (language)
-  "Tree-sitter font lock settings."
+  "Tree-sitter font lock settings.
+Argument LANGUAGE determines the exact nodes matched."
   (append
    (treesit-font-lock-rules
 
@@ -212,6 +215,8 @@
 
 
 (defun stan-ts-mode--indent-rules (language)
+  "Create indentation rules for Stan.
+Argument LANGUAGE is the language they are created for."
   `((,language
      ;; Top-level: column 0
      ((parent-is "program") column-0 0)
