@@ -18,15 +18,14 @@
 
 (require 'treesit)
 
-;; TODO: In emacs 31.1+, use treesit-ensure-installed instead of treesit-ready-p
-;; (add-to-list
-;;  'treesit-language-source-alist
-;;  '(stan . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stan/src"))
-;;  t)
-;; (add-to-list
-;;  'treesit-language-source-alist
-;;  '(stanfunctions . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stanfunctions/src"))
-;;  t)
+(add-to-list
+ 'treesit-language-source-alist
+ '(stan . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stan/src"))
+ t)
+(add-to-list
+ 'treesit-language-source-alist
+ '(stanfunctions . ("https://github.com/WardBrian/tree-sitter-stan" "v0.3.0" "grammars/stanfunctions/src"))
+ t)
 
 (defcustom stan-ts-mode-indent-offset 2
   "Number of spaces for each indentation step in `stan-ts-mode'."
@@ -382,7 +381,7 @@ Argument LANGUAGE is the language they are created for."
 
 (defun stan-ts-mode--setup-mode (language)
   "Set up the tree-sitter mode for the given LANGUAGE."
-  (when (treesit-ready-p language)
+  (when (treesit-ensure-installed language)
     (let ((parser (treesit-parser-create language)))
       (when (boundp 'treesit-primary-parser)
         (setq-local treesit-primary-parser parser)))
@@ -440,9 +439,6 @@ Argument LANGUAGE is the language they are created for."
 (put 'stan-ts-base-mode 'eglot-language-id "stan")
 (put 'stan-ts-mode 'eglot-language-id "stan")
 (put 'stan-functions-ts-mode 'eglot-language-id "stan")
-
-(unless (treesit-ready-p 'stan)
-  (user-error "Error: stan-ts-mode cannot be activated. Ensure tree-sitter and tree-sitter-stan are installed"))
 
 (provide 'stan-ts-mode)
 ;;; stan-ts-mode.el ends here
