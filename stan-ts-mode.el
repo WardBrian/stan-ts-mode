@@ -37,8 +37,7 @@
   "Get the valid types for Stan.
 Argument LANGUAGE determines if constrained types are included."
   (append
-   '("data"
-     "int"
+   '("int"
      "real"
      "complex"
      "array"
@@ -101,7 +100,7 @@ Argument LANGUAGE determines if constrained types are included."
 
 (defun stan-ts-mode--treesit-settings (language)
   "Tree-sitter font lock settings.
-Argument LANGUAGE determines the exact nodes matched."
+  Argument LANGUAGE determines the exact nodes matched."
   (append
    (treesit-font-lock-rules
 
@@ -135,6 +134,7 @@ Argument LANGUAGE determines the exact nodes matched."
       (for_statement
        loopvar: (identifier) @font-lock-variable-name-face)
       (parameter_declaration
+       "data" @font-lock-type-face
        parameter: (identifier) @font-lock-variable-name-face)
       (var_decl name: (identifier) @font-lock-variable-name-face))
 
@@ -289,6 +289,53 @@ Argument LANGUAGE is the language they are created for."
      (comment "comment"))))
 
 
+(defun stan-ts-mode--defun-name  (node)
+  "Return the defun name of NODE."
+  (pcase (treesit-node-type node)
+    ("function_definition"
+     (treesit-node-text
+      (treesit-node-child-by-field-name
+       (treesit-node-child node 1) "name")
+      t))))
+
+(defun stan-ts-mode--has-parent-p (parent node)
+  "Whether or not NODE has a parent called PARENT."
+  (string-equal
+   parent
+   (treesit-node-type (treesit-node-parent node))))
+
+(defun stan-ts-mode--imenu-settings (language)
+  "Return an imenu-settings compatible list for LANGUAGE."
+  (append
+   '(("Function" "function_definition"))
+   (when (eq language 'stan)
+     `(("Block"
+        ,(regexp-opt
+          '("functions"
+            "data"
+            "transformed_data"
+            "parameters"
+            "transformed_parameters"
+            "model"
+            "generated_quantities"))
+        (lambda (node) (stan-ts-mode--has-parent-p "program" node))
+        (lambda (node) (treesit-node-type node)))
+       ("Parameter"
+        ,(regexp-opt '("top_var_decl_no_assign" "top_var_decl"))
+        (lambda (node)
+          (or (stan-ts-mode--has-parent-p "parameters" node) (stan-ts-mode--has-parent-p "transformed_parameters" node)))
+        (lambda (node) (treesit-node-text (treesit-node-child-by-field-name node "name"))))
+       ("Data"
+        ,(regexp-opt '("top_var_decl_no_assign" "top_var_decl"))
+        (lambda (node)
+          (or (stan-ts-mode--has-parent-p "data" node) (stan-ts-mode--has-parent-p "transformed_data" node)))
+        (lambda (node) (treesit-node-text (treesit-node-child-by-field-name node "name"))))
+       ("Generated Quantity"
+        "top_var_decl"
+        (lambda (node) (stan-ts-mode--has-parent-p "generated_quantities" node))
+        (lambda (node) (treesit-node-text (treesit-node-child-by-field-name node "name"))))))
+   '(("Variable" "^var_decl" nil (lambda (node) (treesit-node-text (treesit-node-child-by-field-name node "name")))))))
+
 (defvar stan-ts-mode--syntax-table
   (let ((table (make-syntax-table)))
     ;; Adapted from c-ts-mode
@@ -346,6 +393,29 @@ Argument LANGUAGE is the language they are created for."
     (when (boundp 'treesit-thing-settings)
       (setq-local treesit-thing-settings
                   (stan-ts-mode--treesit-things language)))
+
+    (when (boundp 'treesit-outline-predicate)
+      (setq-local treesit-outline-predicate
+                  (rx bos (or
+                           "functions"
+                           "data"
+                           "transformed_data"
+                           "parameters"
+                           "transformed_parameters"
+                           "model"
+                           "generated_quantities"
+                           "for_statement"
+                           "while_statement"
+                           "if_statement"
+                           "function_definition")
+                      eos)))
+
+    (when (boundp 'treesit-defun-name-function)
+      (setq-local treesit-defun-name-function 'stan-ts-mode--defun-name))
+
+    (when (boundp 'treesit-simple-imenu-settings)
+      (setq-local treesit-simple-imenu-settings
+                  (stan-ts-mode--imenu-settings language)))
 
     (treesit-major-mode-setup)))
 
