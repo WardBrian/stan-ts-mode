@@ -127,7 +127,7 @@ Argument LANGUAGE determines if constrained types are included."
     :feature 'definition
     :language language
     '(
-      (function_declarator
+      (function_definition
        name: (identifier) @font-lock-function-name-face)
       (for_statement
        loopvar: (identifier) @font-lock-variable-name-face)
